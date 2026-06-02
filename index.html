@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="ARCHITECT: A Few Words Go a Long Way — Language Guided Robot Policy Synthesis">
+  <meta name="keywords" content="Robot Learning, Program Synthesis, Human in the Loop, Language Corrections, Skill Library">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ARCHITECT: A Few Words Go a Long Way</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+
+  <style>
+    /* ── Standard Nerfies styling ── */
+    .publication-title {
+      font-family: 'Google Sans', sans-serif;
+    }
+    .publication-authors {
+      font-family: 'Google Sans', sans-serif;
+    }
+    .publication-venue {
+      font-family: 'Google Sans', sans-serif;
+      color: #4a4a4a;
+    }
+    .dnerf {
+      font-variant: small-caps;
+    }
+    body {
+      font-family: 'Noto Sans', sans-serif;
+    }
+    .hero-body .container {
+      max-width: 960px;
+    }
+    .footer {
+      padding: 2rem 1.5rem;
+    }
+    .section {
+      padding: 3rem 1.5rem;
+    }
+    .content h2 {
+      font-family: 'Google Sans', sans-serif;
+    }
+    .title.is-3 {
+      font-family: 'Google Sans', sans-serif;
+    }
+    .title.is-4 {
+      font-family: 'Google Sans', sans-serif;
+    }
+
+    /* Link buttons (nerfies-style) */
+    .link-block {
+      display: inline-block;
+    }
+
+    /* Teaser video */
+    .teaser .hero-body {
+      padding-top: 0;
+      padding-bottom: 3rem;
+    }
+    .publication-video {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      padding-top: 56.25%;
+    }
+    .publication-video iframe,
+    .publication-video video {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* Video placeholder */
+    .video-placeholder {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.8);
+      font-size: 1rem;
+      gap: 0.75rem;
+      border-radius: 6px;
+    }
+    .video-placeholder i { font-size: 2.5rem; opacity: 0.6; }
+
+    /* System figure */
+    .system-figure {
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .system-figure img {
+      max-width: 100%;
+    }
+    .fig-placeholder {
+      width: 100%;
+      aspect-ratio: 2.2/1;
+      background: #f5f5f5;
+      border: 2px dashed #ddd;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+
+    /* ── Comparison rows (4-up video) ── */
+    .comparison-section {
+      padding: 0;
+    }
+    .comparison-block {
+      margin-bottom: 2.5rem;
+    }
+    .comparison-block .task-header {
+      margin-bottom: 0.75rem;
+    }
+    .comparison-block .task-header .tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+    .comparison-block .task-header .task-instruction {
+      font-style: italic;
+      color: #666;
+      font-size: 0.95rem;
+    }
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    @media (max-width: 768px) {
+      .comparison-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .comparison-cell {
+      position: relative;
+      background: #000;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .comparison-cell .method-label {
+      position: absolute;
+      top: 6px; left: 6px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 3px;
+      z-index: 2;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .comparison-cell .method-label.ours {
+      background: rgba(46, 204, 113, 0.9);
+      color: #fff;
+    }
+    .comparison-cell .method-label.baseline {
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+    }
+    .comparison-cell .result-icon {
+      position: absolute;
+      top: 6px; right: 6px;
+      font-size: 0.8rem;
+      z-index: 2;
+    }
+    .comparison-cell video {
+      width: 100%;
+      display: block;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+    }
+    .comparison-cell .cell-placeholder {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.25);
+      font-size: 0.72rem;
+    }
+
+    /* Sync playback controls */
+    .sync-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+      justify-content: flex-end;
+    }
+    .sync-controls button {
+      background: #363636;
+      color: #fff;
+      border: none;
+      padding: 0.35em 0.9em;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35em;
+      transition: background 0.15s;
+    }
+    .sync-controls button:hover { background: #4a4a4a; }
+    .sync-controls .sync-label {
+      font-size: 0.75rem;
+      color: #888;
+    }
+
+    /* ── Results table ── */
+    .results-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+    table.results-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    table.results-table thead th {
+      padding: 0.5rem 0.6rem;
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-align: center;
+      border-bottom: 2px solid #dbdbdb;
+      white-space: nowrap;
+    }
+    table.results-table thead th:first-child { text-align: left; }
+    table.results-table tbody td {
+      padding: 0.45rem 0.6rem;
+      text-align: center;
+      border-bottom: 1px solid #f0f0f0;
+      font-variant-numeric: tabular-nums;
+    }
+    table.results-table tbody td:first-child {
+      text-align: left;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    table.results-table tbody tr:last-child td { border-bottom: none; }
+    .is-best { font-weight: 700; color: #000; }
+    .task-cat { font-size: 0.7rem; color: #999; display: block; font-weight: 400; }
+
+    /* ── Key findings boxes ── */
+    .findings-row {
+      display: flex;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    @media (max-width: 768px) {
+      .findings-row { flex-direction: column; }
+    }
+    .finding-box {
+      flex: 1;
+      background: #f5f5f5;
+      border-radius: 6px;
+      padding: 1.25rem;
+      text-align: center;
+    }
+    .finding-box .finding-stat {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #363636;
+    }
+    .finding-box .finding-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin: 0.25rem 0;
+    }
+    .finding-box .finding-desc {
+      font-size: 0.8rem;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    /* Chart placeholders */
+    .chart-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 768px) {
+      .chart-row { grid-template-columns: 1fr; }
+    }
+    .chart-box {
+      text-align: center;
+    }
+    .chart-box .chart-placeholder {
+      width: 100%;
+      aspect-ratio: 1;
+      background: #f5f5f5;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #bbb;
+      font-size: 0.8rem;
+      margin-bottom: 0.75rem;
+    }
+    .chart-box .chart-label {
+      font-weight: 600;
+      font-size: 0.88rem;
+    }
+    .chart-box .chart-desc {
+      font-size: 0.78rem;
+      color: #666;
+      margin-top: 0.2rem;
+    }
+
+    /* Skill code block */
+    .skill-block {
+      background: #2d2d2d;
+      color: #e0e0e0;
+      border-radius: 6px;
+      padding: 1.5rem;
+      font-family: 'Castoro', 'Courier New', monospace;
+      font-size: 0.82rem;
+      line-height: 1.65;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+    .skill-block .skill-header {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #e74c3c;
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .cm { color: #7f8c8d; }
+    .kw { color: #e74c3c; }
+    .st { color: #2ecc71; }
+    .fn { color: #f1c40f; }
+
+    /* ── BibTeX ── */
+    #BibTeX pre {
+      background: #f5f5f5;
+      padding: 1.25rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+
+    /* Smooth scroll */
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+
+<body>
+
+<!-- ════════════════════ NAV ════════════════════ -->
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="mainNav">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div id="mainNav" class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="#abstract">Abstract</a>
+      <a class="navbar-item" href="#method">Method</a>
+      <a class="navbar-item" href="#results">Results</a>
+      <a class="navbar-item" href="#comparisons">Benchmarking</a>
+      <a class="navbar-item" href="#BibTeX">BibTeX</a>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ════════════════════ HERO ════════════════════ -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">A Few Words Go a Long Way:<br>Language Guided Robot Policy Synthesis</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Anonymous Author(s)</span>
+          </div>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block" style="color:#888;">Anonymous Institution</span>
+          </div>
+          <br>
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link -->
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <!-- arXiv -->
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="ai ai-arxiv"></i></span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video -->
+              <span class="link-block">
+                <a href="#comparisons" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fab fa-youtube"></i></span>
+                  <span>Video</span>
+                </a>
+              </span>
+              <!-- Code -->
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fab fa-github"></i></span>
+                  <span>Code (coming soon)</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════ TEASER VIDEO ════════════════════ -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <!-- Replace placeholder with your ~3min project video -->
+      <div class="video-placeholder">
+        <i class="fas fa-play-circle"></i>
+        <span>Project Video (~3 min) — Coming Soon</span>
+      </div>
+      <!--
+      <video id="teaser" autoplay muted loop playsinline width="100%">
+        <source src="./static/videos/architect_teaser.mp4" type="video/mp4">
+      </video>
+      -->
+      <h2 class="subtitle has-text-centered" style="margin-top:1rem;">
+        <span class="dnerf">ARCHITECT</span> synthesizes robot manipulation policies from natural language instructions and corrections, building a persistent skill library that transfers across tasks.
+      </h2>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════ ABSTRACT ════════════════════ -->
+<section class="section" id="abstract">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            While vision-language-action models have demonstrated impressive zero-shot manipulation capabilities, they remain fundamentally black-box policies that are difficult to interpret, adapt, or correct when they inevitably fail. In this work, we propose <span class="dnerf">ARCHITECT</span>, a framework that treats robot policy acquisition as an interactive program synthesis task.
+          </p>
+          <p>
+            <span class="dnerf">ARCHITECT</span> leverages the reasoning capabilities of LLM coding agents to synthesize modular robot programs that utilize a suite of perception and control tools. Unlike end-to-end models where distribution shift leads to unpredictable, cascading failures, our modular architecture allows users to isolate failures and localize feedback at the level of abstraction required.
+          </p>
+          <p>
+            We introduce an iterative process where a human supervisor provides natural language corrections to steer the policy. These corrections are grounded in the policy code by program execution traces and distilled into a persistent skill library, a form of long-term in-context learning which enables the agent to accumulate a repertoire of reusable, interpretable behaviors.
+          </p>
+          <p>
+            In a benchmark evaluation on a Franka Panda robot, <span class="dnerf">ARCHITECT</span> outperforms state-of-the-art VLA models and program synthesis baselines on complex, long-horizon tasks, including articulated object manipulation and cloth folding. Our results demonstrate that the synthesized skill library enables the system to transfer to novel tasks with decreasing human intervention, providing a steerable and data-efficient alternative to black-box robot learning.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════ METHOD ════════════════════ -->
+<section class="section" id="method">
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Method</h2>
+      </div>
+    </div>
+
+    <!-- System figure -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <div class="system-figure">
+          <!-- Replace with your Figure 1 image -->
+          <div class="fig-placeholder">
+            <span><i class="fas fa-image" style="margin-right:0.5rem;"></i> Figure 1: System Overview — Replace with system diagram</span>
+          </div>
+          <!-- <img src="./static/images/system_overview.png" alt="System overview of ARCHITECT."> -->
+        </div>
+        <p class="has-text-centered" style="font-size:0.88rem;color:#666;margin-top:-0.5rem;">
+          <b>Figure 1:</b> System overview of <span class="dnerf">ARCHITECT</span>. The pipeline takes natural language input and synthesizes robot policies using a suite of tools including control primitives and perception modules. When execution fails, a human provides a language correction, which updates the skill library for future tasks. The agent also receives an execution trace from the robot to help localize code improvements.
+        </p>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+
+        <h3 class="title is-4">Language Guided Policy Synthesis</h3>
+        <div class="content has-text-justified">
+          <p>
+            <span class="dnerf">ARCHITECT</span> uses a pretrained LLM as an <em>orchestrator agent</em> capable of synthesizing executable robot programs that invoke a suite of heterogeneous tools, including pretrained foundation models, open-vocabulary detectors, grasp generators, and motion planners. The language instruction is parsed and embedded into a system prompt which calls the LLM to generate code. The policy code is grounded in the scene by using a set of control and perception primitives as well as tools such as VQA, proprioception, or CLI commands to read the available skills.
+          </p>
+        </div>
+
+        <h3 class="title is-4">Skill Library &amp; Memory</h3>
+        <div class="content has-text-justified">
+          <p>
+            A challenge in human-in-the-loop robot learning is ensuring that corrections are not temporary. When a human provides a language correction during execution, <span class="dnerf">ARCHITECT</span> synthesizes it into a <b>skill</b>: a concise, natural language rule or code pattern that encodes the adjustment. This skill is added to a persistent collection that grows over the course of interaction. Before each subsequent code generation step, all skills in the library are loaded into the agent's context alongside the current task instruction and execution trace.
+          </p>
+        </div>
+
+        <!-- Skill example -->
+        <div class="skill-block">
+          <div class="skill-header">Example Synthesized Skill: Guarded Place on Surface</div>
+          <span class="cm"># Generated from correction: "keep moving down until the box is</span><br>
+          <span class="cm"># touching the shelf. Do not ungrasp if it would fall."</span><br><br>
+          <span class="cm"># Step 1: Move to approximate placement pose</span><br>
+          <span class="fn">move_ee_to_pose</span>(place_pose)<br><br>
+          <span class="cm"># Step 2: Guarded descent until contact</span><br>
+          <span class="fn">move_ee_guarded</span>(axis=<span class="st">"z"</span>, distance=<span class="kw">-0.25</span>, force_threshold=<span class="kw">5.0</span>)<br><br>
+          <span class="cm"># Step 3: Release only after surface contact</span><br>
+          <span class="fn">set_gripper_width</span>(<span class="kw">0.085</span>)<br><br>
+          <span class="cm"># Step 4: Retract upward</span><br>
+          <span class="fn">move_ee_to_rel_pose</span>({<span class="st">"x"</span>: <span class="kw">-0.05</span>, <span class="st">"y"</span>: <span class="kw">0</span>, <span class="st">"z"</span>: <span class="kw">0.1</span>})
+        </div>
+
+        <h3 class="title is-4">Tool Suite</h3>
+        <div class="content has-text-justified">
+          <p>
+            The tools consist of <b>control primitives</b> (motion planning via cuRobo, gripper control, guarded moves, waypoint execution), <b>perception modules</b> (open-vocabulary detection via Grounded SAM2, grasp generation via AnyGrasp, placement estimation via AnyPlace, VQA, DIFT keypoints, ReKep trajectories), and <b>proprioception queries</b> (end-effector pose, joint state, gripper width). Functions are parameterized with natural language input to ground corrections in feasible behavior.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════ RESULTS ════════════════════ -->
+<section class="section" id="results">
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Results</h2>
+      </div>
+    </div>
+
+    <!-- Key findings -->
+    <div class="findings-row">
+      <div class="finding-box">
+        <div class="finding-stat">80%</div>
+        <div class="finding-label">Average Success Rate</div>
+        <div class="finding-desc">Across 8 tasks spanning pick-and-place, deformable manipulation, articulated objects, and long-horizon reasoning.</div>
+      </div>
+      <div class="finding-box">
+        <div class="finding-stat">4.67 → 0.83</div>
+        <div class="finding-label">Fewer Corrections Needed</div>
+        <div class="finding-desc">With a populated skill library, human queries drop 82%. 3/6 participants needed zero corrections.</div>
+      </div>
+      <div class="finding-box">
+        <div class="finding-stat">0% → 67%</div>
+        <div class="finding-label">Zero-Shot Transfer</div>
+        <div class="finding-desc">Skills from Task 1 transfer to Task 2, raising success rate without any additional corrections.</div>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+
+        <h3 class="title is-4"><span class="dnerf">ARCHITECT</span> outperforms generalist policies</h3>
+        <div class="content has-text-justified">
+          <p>
+            We evaluate on 8 real-world manipulation tasks on a Franka Panda with the DROID setup, comparing against Code as Policies (CaP), &pi;<sub>0</sub>, &pi;<sub>0.5</sub>, and an ablation using VLM-generated corrections (<span class="dnerf">ARCHITECT</span>-VLM). Each policy is evaluated with N=10 episodes per task (400 total rollouts).
+          </p>
+        </div>
+
+        <!-- Results table -->
+        <div class="results-table-wrap">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th rowspan="2" style="vertical-align:bottom;">Task</th>
+                <th colspan="3">CaP</th>
+                <th colspan="3">&pi;<sub>0</sub></th>
+                <th colspan="3">&pi;<sub>0.5</sub></th>
+                <th colspan="3">Ours-VLM</th>
+                <th colspan="3">Ours-HiTL</th>
+              </tr>
+              <tr>
+                <th>SR</th><th>GCR</th><th>NTP</th>
+                <th>SR</th><th>GCR</th><th>NTP</th>
+                <th>SR</th><th>GCR</th><th>NTP</th>
+                <th>SR</th><th>GCR</th><th>NTP</th>
+                <th>SR</th><th>GCR</th><th>NTP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Banana → plate <span class="task-cat">Pick-Place</span></td>
+                <td>.20</td><td>.52</td><td>.52</td>
+                <td>.80</td><td>.90</td><td>.90</td>
+                <td><b>.90</b></td><td><b>.98</b></td><td><b>.98</b></td>
+                <td>.80</td><td>.88</td><td>.88</td>
+                <td>.80</td><td>.96</td><td>.96</td>
+              </tr>
+              <tr>
+                <td>Block → basket <span class="task-cat">Pick-Place</span></td>
+                <td>.40</td><td>.52</td><td>.52</td>
+                <td>.40</td><td>.44</td><td>.44</td>
+                <td class="is-best">1.0</td><td class="is-best">1.0</td><td class="is-best">1.0</td>
+                <td>.70</td><td>.80</td><td>.80</td>
+                <td>.70</td><td>.82</td><td>.82</td>
+              </tr>
+              <tr>
+                <td>Baseball → bucket <span class="task-cat">Pick-Place</span></td>
+                <td>.60</td><td>.66</td><td>.66</td>
+                <td>.00</td><td>.16</td><td>.16</td>
+                <td>.20</td><td>.50</td><td>.50</td>
+                <td>.40</td><td>.62</td><td>.62</td>
+                <td class="is-best">1.0</td><td class="is-best">1.0</td><td class="is-best">1.0</td>
+              </tr>
+              <tr>
+                <td>Apple &amp; bread → bowl <span class="task-cat">Multi Pick-Place</span></td>
+                <td>.10</td><td>.59</td><td>.47</td>
+                <td>.40</td><td>.64</td><td>.64</td>
+                <td>.40</td><td>.65</td><td>.65</td>
+                <td>.00</td><td>.49</td><td>.39</td>
+                <td class="is-best">.80</td><td class="is-best">.88</td><td class="is-best">.88</td>
+              </tr>
+              <tr>
+                <td>Bread from box <span class="task-cat">Clutter</span></td>
+                <td>.10</td><td>.38</td><td>.38</td>
+                <td>.40</td><td>.40</td><td>.40</td>
+                <td>.40</td><td>.44</td><td>.44</td>
+                <td>.00</td><td>.24</td><td>.24</td>
+                <td class="is-best">.70</td><td class="is-best">.78</td><td class="is-best">.78</td>
+              </tr>
+              <tr>
+                <td>Close drawer <span class="task-cat">Articulated</span></td>
+                <td>.00</td><td>.00</td><td>.00</td>
+                <td>.10</td><td>.23</td><td>.23</td>
+                <td>.00</td><td>.17</td><td>.17</td>
+                <td>.40</td><td>.60</td><td>.60</td>
+                <td class="is-best">.90</td><td class="is-best">.90</td><td class="is-best">.90</td>
+              </tr>
+              <tr>
+                <td>Fold cloth <span class="task-cat">Deformable</span></td>
+                <td>.00</td><td>.00</td><td>.00</td>
+                <td>.00</td><td>.40</td><td>.40</td>
+                <td>.00</td><td>.04</td><td>.04</td>
+                <td>.70</td><td>.62</td><td>.62</td>
+                <td class="is-best">.80</td><td class="is-best">.95</td><td class="is-best">.95</td>
+              </tr>
+              <tr>
+                <td>Banana under cloth <span class="task-cat">Long Horizon</span></td>
+                <td>.00</td><td>.40</td><td>.40</td>
+                <td>.10</td><td>.36</td><td>.36</td>
+                <td>.00</td><td>.19</td><td>.19</td>
+                <td>.00</td><td>.60</td><td>.60</td>
+                <td class="is-best">.80</td><td class="is-best">.80</td><td>.60</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:0.82rem;color:#888;margin-top:0.5rem;">
+          <b>Table 1:</b> Success Rate (SR), Goal Condition Recall (GCR), and Normalized Task Progression (NTP) across tasks. <b>Bold</b> indicates best per task. We compare <span class="dnerf">ARCHITECT</span>-HiTL against CaP, &pi;<sub>0</sub>, &pi;<sub>0.5</sub>, and ablation <span class="dnerf">ARCHITECT</span>-VLM.
+        </p>
+
+        <br>
+
+        <h3 class="title is-4">Human Evaluation</h3>
+        <div class="content has-text-justified">
+          <p>
+            In an N=6 within-subjects study, we isolate three effects: the value of human language corrections, skill library transfer to new scenes, and human effort amortization through the skill library. Each participant completes two structurally similar tasks across six conditions that systematically toggle human corrections and skill library access.
+          </p>
+        </div>
+
+        <!-- Chart placeholders for Figure 5 -->
+        <div class="chart-row">
+          <div class="chart-box">
+            <div class="chart-placeholder">
+              <!-- Replace with Figure 5a image -->
+              <i class="fas fa-chart-line" style="font-size:1.5rem;"></i>
+            </div>
+            <div class="chart-label">(a) Sample Efficiency</div>
+            <div class="chart-desc">Mean corrections: 4.67 → 0.83 with skill library (p=0.036)</div>
+          </div>
+          <div class="chart-box">
+            <div class="chart-placeholder">
+              <!-- Replace with Figure 5b image -->
+              <i class="fas fa-chart-bar" style="font-size:1.5rem;"></i>
+            </div>
+            <div class="chart-label">(b) Transfer: Success Rate</div>
+            <div class="chart-desc">SR rises from 0/6 to 4/6 with Task 1 skills loaded</div>
+          </div>
+          <div class="chart-box">
+            <div class="chart-placeholder">
+              <!-- Replace with Figure 5c image -->
+              <i class="fas fa-chart-bar" style="font-size:1.5rem;"></i>
+            </div>
+            <div class="chart-label">(c) Transfer: Task Completion</div>
+            <div class="chart-desc">Skills generalize to new objects and scenes</div>
+          </div>
+        </div>
+        <p style="font-size:0.82rem;color:#888;">
+          <b>Figure 5:</b> <span class="dnerf">ARCHITECT</span> results from human evaluation. (a) With a populated skill library, HiTL trials require fewer human queries. (b, c) Skills from Task 1 transfer to Task 2, raising both success rate and task completion.
+        </p>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════ VIDEO COMPARISONS ════════════════════ -->
+<section class="section" id="comparisons">
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Benchmarking</h2>
+        <div class="content has-text-justified">
+          <p>
+            Side-by-side comparisons of <span class="dnerf">ARCHITECT</span> against baselines across all 8 evaluation tasks. Videos play synchronized — use the controls to play/pause/restart all videos in a row simultaneously.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+
+        <!-- ── Task 1: Long Horizon ── -->
+        <div class="comparison-block" data-group="long-horizon">
+          <div class="task-header">
+            <span class="tag is-dark">Long Horizon</span>
+            <span class="task-instruction">"There is a banana underneath the cloth. Pick up the cloth and drop it aside, then pick and place the banana into the dish plate."</span>
+          </div>
+          <div class="sync-controls">
+            <span class="sync-label">Synchronized playback</span>
+            <button onclick="syncPlay(this)"><i class="fas fa-play"></i> Play</button>
+            <button onclick="syncPause(this)"><i class="fas fa-pause"></i> Pause</button>
+            <button onclick="syncRestart(this)"><i class="fas fa-redo"></i> Restart</button>
+          </div>
+          <div class="comparison-grid">
+            <div class="comparison-cell">
+              <span class="method-label ours">ARCHITECT ✓</span>
+              <div class="cell-placeholder"><!-- <video muted loop playsinline preload="metadata"><source src="./static/videos/long_horizon_ours.mp4" type="video/mp4"></video> -->video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">CaP ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">&pi;<sub>0</sub> ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">&pi;<sub>0.5</sub> ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Task 2: Deformable ── -->
+        <div class="comparison-block" data-group="deformable">
+          <div class="task-header">
+            <span class="tag is-dark">Deformable</span>
+            <span class="task-instruction">"Fold the cloth into a triangle along the diagonal."</span>
+          </div>
+          <div class="sync-controls">
+            <span class="sync-label">Synchronized playback</span>
+            <button onclick="syncPlay(this)"><i class="fas fa-play"></i> Play</button>
+            <button onclick="syncPause(this)"><i class="fas fa-pause"></i> Pause</button>
+            <button onclick="syncRestart(this)"><i class="fas fa-redo"></i> Restart</button>
+          </div>
+          <div class="comparison-grid">
+            <div class="comparison-cell">
+              <span class="method-label ours">ARCHITECT ✓</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">CaP ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">&pi;<sub>0</sub> ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">&pi;<sub>0.5</sub> ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Task 3: Articulated ── -->
+        <div class="comparison-block" data-group="articulated">
+          <div class="task-header">
+            <span class="tag is-dark">Articulated</span>
+            <span class="task-instruction">"Push the top drawer closed."</span>
+          </div>
+          <div class="sync-controls">
+            <span class="sync-label">Synchronized playback</span>
+            <button onclick="syncPlay(this)"><i class="fas fa-play"></i> Play</button>
+            <button onclick="syncPause(this)"><i class="fas fa-pause"></i> Pause</button>
+            <button onclick="syncRestart(this)"><i class="fas fa-redo"></i> Restart</button>
+          </div>
+          <div class="comparison-grid">
+            <div class="comparison-cell">
+              <span class="method-label ours">ARCHITECT ✓</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">CaP ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">&pi;<sub>0</sub> ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">&pi;<sub>0.5</sub> ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Task 4: Clutter ── -->
+        <div class="comparison-block" data-group="clutter">
+          <div class="task-header">
+            <span class="tag is-dark">Clutter</span>
+            <span class="task-instruction">"Pick up the bread and put it to the side of the box."</span>
+          </div>
+          <div class="sync-controls">
+            <span class="sync-label">Synchronized playback</span>
+            <button onclick="syncPlay(this)"><i class="fas fa-play"></i> Play</button>
+            <button onclick="syncPause(this)"><i class="fas fa-pause"></i> Pause</button>
+            <button onclick="syncRestart(this)"><i class="fas fa-redo"></i> Restart</button>
+          </div>
+          <div class="comparison-grid">
+            <div class="comparison-cell">
+              <span class="method-label ours">ARCHITECT ✓</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">CaP ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">&pi;<sub>0</sub> ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">&pi;<sub>0.5</sub> ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Task 5: Multi Pick-Place ── -->
+        <div class="comparison-block" data-group="multi-pp">
+          <div class="task-header">
+            <span class="tag is-dark">Multi Pick-Place</span>
+            <span class="task-instruction">"Put the apple and the bread into the bowl."</span>
+          </div>
+          <div class="sync-controls">
+            <span class="sync-label">Synchronized playback</span>
+            <button onclick="syncPlay(this)"><i class="fas fa-play"></i> Play</button>
+            <button onclick="syncPause(this)"><i class="fas fa-pause"></i> Pause</button>
+            <button onclick="syncRestart(this)"><i class="fas fa-redo"></i> Restart</button>
+          </div>
+          <div class="comparison-grid">
+            <div class="comparison-cell">
+              <span class="method-label ours">ARCHITECT ✓</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">CaP ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">&pi;<sub>0</sub> ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">&pi;<sub>0.5</sub> ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Task 6: Pick-Place Banana ── -->
+        <div class="comparison-block" data-group="pp-banana">
+          <div class="task-header">
+            <span class="tag is-dark">Pick-Place</span>
+            <span class="task-instruction">"Pick up the banana and put it in the bowl."</span>
+          </div>
+          <div class="sync-controls">
+            <span class="sync-label">Synchronized playback</span>
+            <button onclick="syncPlay(this)"><i class="fas fa-play"></i> Play</button>
+            <button onclick="syncPause(this)"><i class="fas fa-pause"></i> Pause</button>
+            <button onclick="syncRestart(this)"><i class="fas fa-redo"></i> Restart</button>
+          </div>
+          <div class="comparison-grid">
+            <div class="comparison-cell">
+              <span class="method-label ours">ARCHITECT ✓</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">CaP ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">&pi;<sub>0</sub> ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">&pi;<sub>0.5</sub> ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Task 7: Pick-Place Block ── -->
+        <div class="comparison-block" data-group="pp-block">
+          <div class="task-header">
+            <span class="tag is-dark">Pick-Place</span>
+            <span class="task-instruction">"Pick up the block and put it in the basket."</span>
+          </div>
+          <div class="sync-controls">
+            <span class="sync-label">Synchronized playback</span>
+            <button onclick="syncPlay(this)"><i class="fas fa-play"></i> Play</button>
+            <button onclick="syncPause(this)"><i class="fas fa-pause"></i> Pause</button>
+            <button onclick="syncRestart(this)"><i class="fas fa-redo"></i> Restart</button>
+          </div>
+          <div class="comparison-grid">
+            <div class="comparison-cell">
+              <span class="method-label ours">ARCHITECT ✓</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">CaP ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">&pi;<sub>0</sub> ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">&pi;<sub>0.5</sub> ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Task 8: Pick-Place Baseball ── -->
+        <div class="comparison-block" data-group="pp-baseball">
+          <div class="task-header">
+            <span class="tag is-dark">Pick-Place</span>
+            <span class="task-instruction">"Pick up the baseball and put it in the bucket."</span>
+          </div>
+          <div class="sync-controls">
+            <span class="sync-label">Synchronized playback</span>
+            <button onclick="syncPlay(this)"><i class="fas fa-play"></i> Play</button>
+            <button onclick="syncPause(this)"><i class="fas fa-pause"></i> Pause</button>
+            <button onclick="syncRestart(this)"><i class="fas fa-redo"></i> Restart</button>
+          </div>
+          <div class="comparison-grid">
+            <div class="comparison-cell">
+              <span class="method-label ours">ARCHITECT ✓</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">CaP ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">&pi;<sub>0</sub> ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+            <div class="comparison-cell">
+              <span class="method-label baseline">&pi;<sub>0.5</sub> ✗</span>
+              <div class="cell-placeholder">video</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════ BIBTEX ════════════════════ -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@inproceedings{anonymous2026architect,
+  author    = {Anonymous},
+  title     = {A Few Words Go a Long Way: Language Guided Robot
+               Policy Synthesis},
+  booktitle = {Conference on Robot Learning},
+  year      = {2026},
+}</code></pre>
+  </div>
+</section>
+
+
+<!-- ════════════════════ FOOTER ════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content" style="text-align:center;">
+          <p>
+            This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            Website template borrowed from <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.
+            Please remember to remove the analytics code included in the header of the website which you do not want on your website.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ════════════════════ SCRIPTS ════════════════════ -->
+<script>
+  // Burger menu toggle
+  document.addEventListener('DOMContentLoaded', () => {
+    const burger = document.querySelector('.navbar-burger');
+    const menu = document.getElementById(burger.dataset.target);
+    burger.addEventListener('click', () => {
+      burger.classList.toggle('is-active');
+      menu.classList.toggle('is-active');
+    });
+  });
+
+  // Synchronized video playback
+  function getVideos(button) {
+    const block = button.closest('.comparison-block');
+    return block.querySelectorAll('video');
+  }
+
+  function syncPlay(button) {
+    const videos = getVideos(button);
+    videos.forEach(v => v.play());
+  }
+
+  function syncPause(button) {
+    const videos = getVideos(button);
+    videos.forEach(v => v.pause());
+  }
+
+  function syncRestart(button) {
+    const videos = getVideos(button);
+    videos.forEach(v => {
+      v.currentTime = 0;
+      v.play();
+    });
+  }
+
+  // Auto-sync: when any video in a group plays, play all others
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.comparison-block').forEach(block => {
+      const videos = block.querySelectorAll('video');
+      if (videos.length === 0) return;
+
+      // Use IntersectionObserver for auto-play on scroll
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            videos.forEach(v => {
+              v.currentTime = 0;
+              v.play().catch(() => {});
+            });
+          } else {
+            videos.forEach(v => v.pause());
+          }
+        });
+      }, { threshold: 0.5 });
+
+      observer.observe(block);
+    });
+  });
+</script>
+
+</body>
+</html>
