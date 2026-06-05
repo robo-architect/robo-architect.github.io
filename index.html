@@ -165,6 +165,10 @@
       background: rgba(0, 0, 0, 0.6);
       color: #fff;
     }
+    .comparison-cell .method-label.baseline.success {
+      background: rgba(46, 204, 113, 0.9);
+      color: #fff;
+    }
     .comparison-cell .result-icon {
       position: absolute;
       top: 6px; right: 6px;
@@ -381,8 +385,8 @@
     <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
       <a class="navbar-item" href="#abstract">Abstract</a>
       <a class="navbar-item" href="#method">Method</a>
+      <a class="navbar-item" href="#comparisons">Real-World Benchmarking</a>
       <a class="navbar-item" href="#results">Results</a>
-      <a class="navbar-item" href="#comparisons">Benchmarking</a>
       <a class="navbar-item" href="#BibTeX">BibTeX</a>
     </div>
   </div>
@@ -558,183 +562,13 @@
 </section>
 
 
-<!-- ════════════════════ RESULTS ════════════════════ -->
-<section class="section" id="results">
-  <div class="container is-max-desktop">
-
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Results</h2>
-      </div>
-    </div>
-
-    <!-- Key findings -->
-    <div class="findings-row">
-      <div class="finding-box">
-        <div class="finding-stat">80%</div>
-        <div class="finding-label">Average Success Rate</div>
-        <div class="finding-desc">Across 8 tasks spanning pick-and-place, deformable manipulation, articulated objects, and long-horizon reasoning.</div>
-      </div>
-      <div class="finding-box">
-        <div class="finding-stat">4.67 → 0.83</div>
-        <div class="finding-label">Fewer Corrections Needed</div>
-        <div class="finding-desc">With a populated skill library, human queries drop 82%. 3/6 participants needed zero corrections.</div>
-      </div>
-      <div class="finding-box">
-        <div class="finding-stat">0% → 67%</div>
-        <div class="finding-label">Zero-Shot Transfer</div>
-        <div class="finding-desc">Skills from Task 1 transfer to Task 2, raising success rate without any additional corrections.</div>
-      </div>
-    </div>
-
-    <br>
-
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-
-        <h3 class="title is-4"><span class="dnerf">ARCHITECT</span> outperforms generalist policies</h3>
-        <div class="content has-text-justified">
-          <p>
-            We evaluate on 8 real-world manipulation tasks on a Franka Panda with the DROID setup, comparing against Code as Policies (CaP), &pi;<sub>0</sub>, &pi;<sub>0.5</sub>, and an ablation using VLM-generated corrections (<span class="dnerf">ARCHITECT</span>-VLM). Each policy is evaluated with N=10 episodes per task (400 total rollouts).
-          </p>
-        </div>
-
-        <!-- Results table -->
-        <div class="results-table-wrap">
-          <table class="results-table">
-            <thead>
-              <tr>
-                <th rowspan="2" style="vertical-align:bottom;">Task</th>
-                <th colspan="3">CaP</th>
-                <th colspan="3">&pi;<sub>0</sub></th>
-                <th colspan="3">&pi;<sub>0.5</sub></th>
-                <th colspan="3">Ours-VLM</th>
-                <th colspan="3">Ours-HiTL</th>
-              </tr>
-              <tr>
-                <th>SR</th><th>GCR</th><th>NTP</th>
-                <th>SR</th><th>GCR</th><th>NTP</th>
-                <th>SR</th><th>GCR</th><th>NTP</th>
-                <th>SR</th><th>GCR</th><th>NTP</th>
-                <th>SR</th><th>GCR</th><th>NTP</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Banana → plate <span class="task-cat">Pick-Place</span></td>
-                <td>.20</td><td>.52</td><td>.52</td>
-                <td>.80</td><td>.90</td><td>.90</td>
-                <td><b>.90</b></td><td><b>.98</b></td><td><b>.98</b></td>
-                <td>.80</td><td>.88</td><td>.88</td>
-                <td>.80</td><td>.96</td><td>.96</td>
-              </tr>
-              <tr>
-                <td>Block → basket <span class="task-cat">Pick-Place</span></td>
-                <td>.40</td><td>.52</td><td>.52</td>
-                <td>.40</td><td>.44</td><td>.44</td>
-                <td class="is-best">1.0</td><td class="is-best">1.0</td><td class="is-best">1.0</td>
-                <td>.70</td><td>.80</td><td>.80</td>
-                <td>.70</td><td>.82</td><td>.82</td>
-              </tr>
-              <tr>
-                <td>Baseball → bucket <span class="task-cat">Pick-Place</span></td>
-                <td>.60</td><td>.66</td><td>.66</td>
-                <td>.00</td><td>.16</td><td>.16</td>
-                <td>.20</td><td>.50</td><td>.50</td>
-                <td>.40</td><td>.62</td><td>.62</td>
-                <td class="is-best">1.0</td><td class="is-best">1.0</td><td class="is-best">1.0</td>
-              </tr>
-              <tr>
-                <td>Apple &amp; bread → bowl <span class="task-cat">Multi Pick-Place</span></td>
-                <td>.10</td><td>.59</td><td>.47</td>
-                <td>.40</td><td>.64</td><td>.64</td>
-                <td>.40</td><td>.65</td><td>.65</td>
-                <td>.00</td><td>.49</td><td>.39</td>
-                <td class="is-best">.80</td><td class="is-best">.88</td><td class="is-best">.88</td>
-              </tr>
-              <tr>
-                <td>Bread from box <span class="task-cat">Clutter</span></td>
-                <td>.10</td><td>.38</td><td>.38</td>
-                <td>.40</td><td>.40</td><td>.40</td>
-                <td>.40</td><td>.44</td><td>.44</td>
-                <td>.00</td><td>.24</td><td>.24</td>
-                <td class="is-best">.70</td><td class="is-best">.78</td><td class="is-best">.78</td>
-              </tr>
-              <tr>
-                <td>Close drawer <span class="task-cat">Articulated</span></td>
-                <td>.00</td><td>.00</td><td>.00</td>
-                <td>.10</td><td>.23</td><td>.23</td>
-                <td>.00</td><td>.17</td><td>.17</td>
-                <td>.40</td><td>.60</td><td>.60</td>
-                <td class="is-best">.90</td><td class="is-best">.90</td><td class="is-best">.90</td>
-              </tr>
-              <tr>
-                <td>Fold cloth <span class="task-cat">Deformable</span></td>
-                <td>.00</td><td>.00</td><td>.00</td>
-                <td>.00</td><td>.40</td><td>.40</td>
-                <td>.00</td><td>.04</td><td>.04</td>
-                <td>.70</td><td>.62</td><td>.62</td>
-                <td class="is-best">.80</td><td class="is-best">.95</td><td class="is-best">.95</td>
-              </tr>
-              <tr>
-                <td>Banana under cloth <span class="task-cat">Long Horizon</span></td>
-                <td>.00</td><td>.40</td><td>.40</td>
-                <td>.10</td><td>.36</td><td>.36</td>
-                <td>.00</td><td>.19</td><td>.19</td>
-                <td>.00</td><td>.60</td><td>.60</td>
-                <td class="is-best">.80</td><td class="is-best">.80</td><td>.60</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p style="font-size:0.82rem;color:#888;margin-top:0.5rem;">
-          <b>Table 1:</b> Success Rate (SR), Goal Condition Recall (GCR), and Normalized Task Progression (NTP) across tasks. <b>Bold</b> indicates best per task. We compare <span class="dnerf">ARCHITECT</span>-HiTL against CaP, &pi;<sub>0</sub>, &pi;<sub>0.5</sub>, and ablation <span class="dnerf">ARCHITECT</span>-VLM.
-        </p>
-
-        <br>
-
-        <h3 class="title is-4">Human Evaluation</h3>
-        <div class="content has-text-justified">
-          <p>
-            In an N=6 within-subjects study, we isolate three effects: the value of human language corrections, skill library transfer to new scenes, and human effort amortization through the skill library. Each participant completes two structurally similar tasks across six conditions that systematically toggle human corrections and skill library access.
-          </p>
-        </div>
-
-        <!-- Figure 5: human eval charts -->
-        <div class="chart-row">
-          <div class="chart-box">
-            <img src="./static/images/compare_05_vs_06.png" alt="Sample efficiency: mean corrections drop with skill library.">
-            <div class="chart-label">(a) Sample Efficiency</div>
-            <div class="chart-desc">Mean corrections: 4.67 → 0.83 with skill library (p=0.036)</div>
-          </div>
-          <div class="chart-box">
-            <img src="./static/images/compare_03_vs_04.png" alt="Transfer success rate rises with Task 1 skills loaded.">
-            <div class="chart-label">(b) Transfer: Success Rate</div>
-            <div class="chart-desc">SR rises from 0/6 to 4/6 with Task 1 skills loaded</div>
-          </div>
-          <div class="chart-box">
-            <img src="./static/images/compare_03_vs_04_gcr.png" alt="Transfer task completion improves with loaded skills.">
-            <div class="chart-label">(c) Transfer: Task Completion</div>
-            <div class="chart-desc">Skills generalize to new objects and scenes</div>
-          </div>
-        </div>
-        <p style="font-size:0.82rem;color:#888;">
-          <b>Figure 5:</b> <span class="dnerf">ARCHITECT</span> results from human evaluation. (a) With a populated skill library, HiTL trials require fewer human queries. (b, c) Skills from Task 1 transfer to Task 2, raising both success rate and task completion.
-        </p>
-
-      </div>
-    </div>
-  </div>
-</section>
-
-
 <!-- ════════════════════ VIDEO COMPARISONS ════════════════════ -->
 <section class="section" id="comparisons">
   <div class="container is-max-desktop">
 
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">Benchmarking</h2>
+        <h2 class="title is-3">Real-World Benchmarking</h2>
         <div class="content has-text-justified">
           <p>
             Side-by-side comparisons of <span class="dnerf">ARCHITECT</span> against baselines across all 8 evaluation tasks. Videos play synchronized — use the controls to play/pause/restart all videos in a row simultaneously.
@@ -964,7 +798,7 @@
               <video muted loop playsinline preload="metadata"><source src="https://storage.googleapis.com/architect-project-vids-b4ed5e/videos/block_basket__PI0.mp4" type="video/mp4"></video>
             </div>
             <div class="comparison-cell">
-              <span class="method-label baseline">&pi;<sub>0.5</sub> ✗</span>
+              <span class="method-label baseline success">&pi;<sub>0.5</sub> ✓</span>
               <video muted loop playsinline preload="metadata"><source src="https://storage.googleapis.com/architect-project-vids-b4ed5e/videos/block_basket__PI05.mp4" type="video/mp4"></video>
             </div>
           </div>
@@ -1001,6 +835,176 @@
             </div>
           </div>
         </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════ RESULTS ════════════════════ -->
+<section class="section" id="results">
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Results</h2>
+      </div>
+    </div>
+
+    <!-- Key findings -->
+    <div class="findings-row">
+      <div class="finding-box">
+        <div class="finding-stat">80%</div>
+        <div class="finding-label">Average Success Rate</div>
+        <div class="finding-desc">Across 8 tasks spanning pick-and-place, deformable manipulation, articulated objects, and long-horizon reasoning.</div>
+      </div>
+      <div class="finding-box">
+        <div class="finding-stat">4.67 → 0.83</div>
+        <div class="finding-label">Fewer Corrections Needed</div>
+        <div class="finding-desc">With a populated skill library, human queries drop 82%. 3/6 participants needed zero corrections.</div>
+      </div>
+      <div class="finding-box">
+        <div class="finding-stat">0% → 67%</div>
+        <div class="finding-label">Zero-Shot Transfer</div>
+        <div class="finding-desc">Skills from Task 1 transfer to Task 2, raising success rate without any additional corrections.</div>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+
+        <h3 class="title is-4"><span class="dnerf">ARCHITECT</span> outperforms generalist policies</h3>
+        <div class="content has-text-justified">
+          <p>
+            We evaluate on 8 real-world manipulation tasks on a Franka Panda with the DROID setup, comparing against Code as Policies (CaP), &pi;<sub>0</sub>, &pi;<sub>0.5</sub>, and an ablation using VLM-generated corrections (<span class="dnerf">ARCHITECT</span>-VLM). Each policy is evaluated with N=10 episodes per task (400 total rollouts).
+          </p>
+        </div>
+
+        <!-- Results table -->
+        <div class="results-table-wrap">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th rowspan="2" style="vertical-align:bottom;">Task</th>
+                <th colspan="3">CaP</th>
+                <th colspan="3">&pi;<sub>0</sub></th>
+                <th colspan="3">&pi;<sub>0.5</sub></th>
+                <th colspan="3">Ours-VLM</th>
+                <th colspan="3">Ours-HiTL</th>
+              </tr>
+              <tr>
+                <th>SR</th><th>GCR</th><th>NTP</th>
+                <th>SR</th><th>GCR</th><th>NTP</th>
+                <th>SR</th><th>GCR</th><th>NTP</th>
+                <th>SR</th><th>GCR</th><th>NTP</th>
+                <th>SR</th><th>GCR</th><th>NTP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Banana → plate <span class="task-cat">Pick-Place</span></td>
+                <td>.20</td><td>.52</td><td>.52</td>
+                <td>.80</td><td>.90</td><td>.90</td>
+                <td><b>.90</b></td><td><b>.98</b></td><td><b>.98</b></td>
+                <td>.80</td><td>.88</td><td>.88</td>
+                <td>.80</td><td>.96</td><td>.96</td>
+              </tr>
+              <tr>
+                <td>Block → basket <span class="task-cat">Pick-Place</span></td>
+                <td>.40</td><td>.52</td><td>.52</td>
+                <td>.40</td><td>.44</td><td>.44</td>
+                <td class="is-best">1.0</td><td class="is-best">1.0</td><td class="is-best">1.0</td>
+                <td>.70</td><td>.80</td><td>.80</td>
+                <td>.70</td><td>.82</td><td>.82</td>
+              </tr>
+              <tr>
+                <td>Baseball → bucket <span class="task-cat">Pick-Place</span></td>
+                <td>.60</td><td>.66</td><td>.66</td>
+                <td>.00</td><td>.16</td><td>.16</td>
+                <td>.20</td><td>.50</td><td>.50</td>
+                <td>.40</td><td>.62</td><td>.62</td>
+                <td class="is-best">1.0</td><td class="is-best">1.0</td><td class="is-best">1.0</td>
+              </tr>
+              <tr>
+                <td>Apple &amp; bread → bowl <span class="task-cat">Multi Pick-Place</span></td>
+                <td>.10</td><td>.59</td><td>.47</td>
+                <td>.40</td><td>.64</td><td>.64</td>
+                <td>.40</td><td>.65</td><td>.65</td>
+                <td>.00</td><td>.49</td><td>.39</td>
+                <td class="is-best">.80</td><td class="is-best">.88</td><td class="is-best">.88</td>
+              </tr>
+              <tr>
+                <td>Bread from box <span class="task-cat">Clutter</span></td>
+                <td>.10</td><td>.38</td><td>.38</td>
+                <td>.40</td><td>.40</td><td>.40</td>
+                <td>.40</td><td>.44</td><td>.44</td>
+                <td>.00</td><td>.24</td><td>.24</td>
+                <td class="is-best">.70</td><td class="is-best">.78</td><td class="is-best">.78</td>
+              </tr>
+              <tr>
+                <td>Close drawer <span class="task-cat">Articulated</span></td>
+                <td>.00</td><td>.00</td><td>.00</td>
+                <td>.10</td><td>.23</td><td>.23</td>
+                <td>.00</td><td>.17</td><td>.17</td>
+                <td>.40</td><td>.60</td><td>.60</td>
+                <td class="is-best">.90</td><td class="is-best">.90</td><td class="is-best">.90</td>
+              </tr>
+              <tr>
+                <td>Fold cloth <span class="task-cat">Deformable</span></td>
+                <td>.00</td><td>.00</td><td>.00</td>
+                <td>.00</td><td>.40</td><td>.40</td>
+                <td>.00</td><td>.04</td><td>.04</td>
+                <td>.70</td><td>.62</td><td>.62</td>
+                <td class="is-best">.80</td><td class="is-best">.95</td><td class="is-best">.95</td>
+              </tr>
+              <tr>
+                <td>Banana under cloth <span class="task-cat">Long Horizon</span></td>
+                <td>.00</td><td>.40</td><td>.40</td>
+                <td>.10</td><td>.36</td><td>.36</td>
+                <td>.00</td><td>.19</td><td>.19</td>
+                <td>.00</td><td>.60</td><td>.60</td>
+                <td class="is-best">.80</td><td class="is-best">.80</td><td>.60</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:0.82rem;color:#888;margin-top:0.5rem;">
+          <b>Table 1:</b> Success Rate (SR), Goal Condition Recall (GCR), and Normalized Task Progression (NTP) across tasks. <b>Bold</b> indicates best per task. We compare <span class="dnerf">ARCHITECT</span>-HiTL against CaP, &pi;<sub>0</sub>, &pi;<sub>0.5</sub>, and ablation <span class="dnerf">ARCHITECT</span>-VLM.
+        </p>
+
+        <br>
+
+        <h3 class="title is-4">Human Evaluation</h3>
+        <div class="content has-text-justified">
+          <p>
+            In an N=6 within-subjects study, we isolate three effects: the value of human language corrections, skill library transfer to new scenes, and human effort amortization through the skill library. Each participant completes two structurally similar tasks across six conditions that systematically toggle human corrections and skill library access.
+          </p>
+        </div>
+
+        <!-- Figure 5: human eval charts -->
+        <div class="chart-row">
+          <div class="chart-box">
+            <img src="./static/images/compare_05_vs_06.png" alt="Sample efficiency: mean corrections drop with skill library.">
+            <div class="chart-label">(a) Sample Efficiency</div>
+            <div class="chart-desc">Mean corrections: 4.67 → 0.83 with skill library (p=0.036)</div>
+          </div>
+          <div class="chart-box">
+            <img src="./static/images/compare_03_vs_04.png" alt="Transfer success rate rises with Task 1 skills loaded.">
+            <div class="chart-label">(b) Transfer: Success Rate</div>
+            <div class="chart-desc">SR rises from 0/6 to 4/6 with Task 1 skills loaded</div>
+          </div>
+          <div class="chart-box">
+            <img src="./static/images/compare_03_vs_04_gcr.png" alt="Transfer task completion improves with loaded skills.">
+            <div class="chart-label">(c) Transfer: Task Completion</div>
+            <div class="chart-desc">Skills generalize to new objects and scenes</div>
+          </div>
+        </div>
+        <p style="font-size:0.82rem;color:#888;">
+          <b>Figure 5:</b> <span class="dnerf">ARCHITECT</span> results from human evaluation. (a) With a populated skill library, HiTL trials require fewer human queries. (b, c) Skills from Task 1 transfer to Task 2, raising both success rate and task completion.
+        </p>
 
       </div>
     </div>
