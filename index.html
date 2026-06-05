@@ -253,6 +253,22 @@
     table.results-table tbody tr:last-child td { border-bottom: none; }
     .is-best { font-weight: 700; color: #000; }
     .task-cat { font-size: 0.7rem; color: #999; display: block; font-weight: 400; }
+    table.results-table tbody td.lang-inst {
+      text-align: left;
+      white-space: normal;
+      font-weight: 400;
+      font-style: italic;
+      color: #555;
+      max-width: 32rem;
+      min-width: 20rem;
+      line-height: 1.35;
+    }
+    table.results-table tbody td.pert-cat {
+      text-align: left;
+      font-weight: 500;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
 
     /* ── Key findings boxes ── */
     .findings-row {
@@ -993,6 +1009,124 @@
         </div>
         <p style="font-size:0.82rem;color:#888;margin-top:0.5rem;">
           <b>Table 1:</b> Success Rate (SR), Goal Condition Recall (GCR), and Normalized Task Progression (NTP) across tasks. <b>Bold</b> indicates best per task. We compare <span class="dnerf">ARCHITECT</span>-HiTL against CaP, Inner Monologue, MolmoAct2, &pi;<sub>0</sub>, &pi;<sub>0.5</sub>, and ablation <span class="dnerf">ARCHITECT</span>-VLM.
+        </p>
+
+        <br>
+
+        <h3 class="title is-4"><span class="dnerf">ARCHITECT</span> is robust to language perturbation</h3>
+        <div class="content has-text-justified">
+          <p>
+            To isolate the effect of language on performance, we perturb the instruction on a single task (<i>Apple &rarr; pan</i>) while holding the object pose constant, and compare against &pi;<sub>0.5</sub> &mdash; the strongest VLA baseline from our main evaluation. Perturbations span <b>paraphrasing</b> (synonym, passive voice, reordered, ambiguous), <b>length</b> (short, medium, long), <b>distractors</b> (typos), and <b>specification</b> (under- and over-specified). <span class="dnerf">ARCHITECT</span> remains robust across nearly all variations, while &pi;<sub>0.5</sub> is sensitive to several &mdash; most notably under-specification, over-specification, and reordered or ambiguous prompts. In these failure cases, &pi;<sub>0.5</sub> exhibits undirected motion before eventually orienting toward the task; on <i>"Put the apple away,"</i> the arm moves at random without ever targeting the apple.
+          </p>
+        </div>
+
+        <!-- Language ablation table -->
+        <div class="results-table-wrap">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th rowspan="2" style="vertical-align:bottom;">Perturbation</th>
+                <th rowspan="2" style="vertical-align:bottom; text-align:left;">Instruction</th>
+                <th colspan="3">&pi;<sub>0.5</sub></th>
+                <th colspan="3"><span class="dnerf">ARCHITECT</span></th>
+              </tr>
+              <tr>
+                <th>SR</th><th>GCR</th><th>NTP</th>
+                <th>SR</th><th>GCR</th><th>NTP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="pert-cat">Canonical</td>
+                <td class="lang-inst">"Put the red apple in the pan."</td>
+                <td>1.0</td><td>1.0</td><td>1.0</td>
+                <td>1.0</td><td>1.0</td><td>1.0</td>
+              </tr>
+              <tr>
+                <td class="pert-cat" rowspan="4">Paraphrase (synonym)</td>
+                <td class="lang-inst">"Grab the apple and set it on the pan."</td>
+                <td>1.0</td><td>1.0</td><td>1.0</td>
+                <td>1.0</td><td>1.0</td><td>1.0</td>
+              </tr>
+              <tr>
+                <td class="lang-inst">"Take the apple and place it onto the pan."</td>
+                <td>.00</td><td>.20</td><td>.20</td>
+                <td class="is-best">1.0</td><td class="is-best">1.0</td><td class="is-best">1.0</td>
+              </tr>
+              <tr>
+                <td class="lang-inst">"Move the apple onto the pan."</td>
+                <td>.00</td><td>.20</td><td>.00</td>
+                <td class="is-best">1.0</td><td class="is-best">1.0</td><td class="is-best">1.0</td>
+              </tr>
+              <tr>
+                <td class="lang-inst">"Lift the apple and rest it on the pan."</td>
+                <td>1.0</td><td>1.0</td><td>1.0</td>
+                <td>1.0</td><td>1.0</td><td>1.0</td>
+              </tr>
+              <tr>
+                <td class="pert-cat">Paraphrase (passive)</td>
+                <td class="lang-inst">"The apple should be picked up and placed on the pan."</td>
+                <td>1.0</td><td>1.0</td><td>1.0</td>
+                <td>1.0</td><td>1.0</td><td>1.0</td>
+              </tr>
+              <tr>
+                <td class="pert-cat">Paraphrase (order)</td>
+                <td class="lang-inst">"Onto the pan, place the apple."</td>
+                <td>.00</td><td>.20</td><td>.20</td>
+                <td class="is-best">1.0</td><td class="is-best">1.0</td><td class="is-best">1.0</td>
+              </tr>
+              <tr>
+                <td class="pert-cat">Paraphrase (ambiguity)</td>
+                <td class="lang-inst">"Relocate the fruit so that it sits on the pan."</td>
+                <td>.00</td><td>.20</td><td>.20</td>
+                <td class="is-best">1.0</td><td class="is-best">1.0</td><td class="is-best">1.0</td>
+              </tr>
+              <tr>
+                <td class="pert-cat">Length (short)</td>
+                <td class="lang-inst">"apple on pan"</td>
+                <td>1.0</td><td>1.0</td><td>1.0</td>
+                <td>1.0</td><td>1.0</td><td>1.0</td>
+              </tr>
+              <tr>
+                <td class="pert-cat">Length (medium)</td>
+                <td class="lang-inst">"Pick up the apple from the table and place it onto the pan sitting nearby."</td>
+                <td>.00</td><td>.20</td><td>.20</td>
+                <td class="is-best">1.0</td><td class="is-best">1.0</td><td class="is-best">1.0</td>
+              </tr>
+              <tr>
+                <td class="pert-cat">Length (long)</td>
+                <td class="lang-inst">"There is an apple resting on the surface in front of you. Pick that apple up, then move it over and place it down onto the pan that is also on the surface, so the apple ends up on the pan."</td>
+                <td class="is-best">1.0</td><td class="is-best">1.0</td><td class="is-best">1.0</td>
+                <td>.00</td><td>.80</td><td>.80</td>
+              </tr>
+              <tr>
+                <td class="pert-cat">Distractor (typos)</td>
+                <td class="lang-inst">"pickup teh appel an put it on the frying pan"</td>
+                <td>.00</td><td>.20</td><td>.20</td>
+                <td class="is-best">1.0</td><td class="is-best">1.0</td><td class="is-best">1.0</td>
+              </tr>
+              <tr>
+                <td class="pert-cat" rowspan="2">Underspecification</td>
+                <td class="lang-inst">"Put the apple away."</td>
+                <td>.00</td><td>.20</td><td>.20</td>
+                <td class="is-best">1.0</td><td class="is-best">1.0</td><td class="is-best">1.0</td>
+              </tr>
+              <tr>
+                <td class="lang-inst">"Move the apple."</td>
+                <td>.00</td><td>.20</td><td>.20</td>
+                <td>.00</td><td class="is-best">.60</td><td class="is-best">.60</td>
+              </tr>
+              <tr>
+                <td class="pert-cat">Overspecification</td>
+                <td class="lang-inst">"Pick up the red apple and put it on the white pan; approach from directly overhead, keep the gripper aligned with the apple's long axis, and release only once it is centered over the pan."</td>
+                <td>.00</td><td>.20</td><td>.20</td>
+                <td class="is-best">1.0</td><td class="is-best">1.0</td><td class="is-best">1.0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:0.82rem;color:#888;margin-top:0.5rem;">
+          <b>Table 2:</b> Language instruction perturbation ablation on the <i>Apple &rarr; pan</i> task. <b>Bold</b> indicates the better method per row. We compare <span class="dnerf">ARCHITECT</span> against &pi;<sub>0.5</sub>, the strongest VLA baseline. Target object position and orientation are held constant across all conditions.
         </p>
 
         <br>
