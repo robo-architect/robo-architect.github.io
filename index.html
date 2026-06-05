@@ -308,6 +308,12 @@
       font-size: 0.8rem;
       margin-bottom: 0.75rem;
     }
+    .chart-box img {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto 0.75rem;
+    }
     .chart-box .chart-label {
       font-weight: 600;
       font-size: 0.88rem;
@@ -498,11 +504,7 @@
     <div class="columns is-centered">
       <div class="column is-full-width">
         <div class="system-figure">
-          <!-- Replace with your Figure 1 image -->
-          <div class="fig-placeholder">
-            <span><i class="fas fa-image" style="margin-right:0.5rem;"></i> Figure 1: System Overview — Replace with system diagram</span>
-          </div>
-          <!-- <img src="./static/images/system_overview.png" alt="System overview of ARCHITECT."> -->
+          <img src="./static/images/architect_system_overview.png" alt="System overview of ARCHITECT.">
         </div>
         <p class="has-text-centered" style="font-size:0.88rem;color:#666;margin-top:-0.5rem;">
           <b>Figure 1:</b> System overview of <span class="dnerf">ARCHITECT</span>. The pipeline takes natural language input and synthesizes robot policies using a suite of tools including control primitives and perception modules. When execution fails, a human provides a language correction, which updates the skill library for future tasks. The agent also receives an execution trace from the robot to help localize code improvements.
@@ -698,29 +700,20 @@
           </p>
         </div>
 
-        <!-- Chart placeholders for Figure 5 -->
+        <!-- Figure 5: human eval charts -->
         <div class="chart-row">
           <div class="chart-box">
-            <div class="chart-placeholder">
-              <!-- Replace with Figure 5a image -->
-              <i class="fas fa-chart-line" style="font-size:1.5rem;"></i>
-            </div>
+            <img src="./static/images/compare_05_vs_06.png" alt="Sample efficiency: mean corrections drop with skill library.">
             <div class="chart-label">(a) Sample Efficiency</div>
             <div class="chart-desc">Mean corrections: 4.67 → 0.83 with skill library (p=0.036)</div>
           </div>
           <div class="chart-box">
-            <div class="chart-placeholder">
-              <!-- Replace with Figure 5b image -->
-              <i class="fas fa-chart-bar" style="font-size:1.5rem;"></i>
-            </div>
+            <img src="./static/images/compare_03_vs_04.png" alt="Transfer success rate rises with Task 1 skills loaded.">
             <div class="chart-label">(b) Transfer: Success Rate</div>
             <div class="chart-desc">SR rises from 0/6 to 4/6 with Task 1 skills loaded</div>
           </div>
           <div class="chart-box">
-            <div class="chart-placeholder">
-              <!-- Replace with Figure 5c image -->
-              <i class="fas fa-chart-bar" style="font-size:1.5rem;"></i>
-            </div>
+            <img src="./static/images/compare_03_vs_04_gcr.png" alt="Transfer task completion improves with loaded skills.">
             <div class="chart-label">(c) Transfer: Task Completion</div>
             <div class="chart-desc">Skills generalize to new objects and scenes</div>
           </div>
